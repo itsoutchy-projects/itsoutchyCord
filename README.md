@@ -1,5 +1,6 @@
 # itsoutchyCord
-A custom discord client designed for ease of use
+A custom discord client designed for ease of use.  
+It's *much* faster thanks to it using Webview2 (*should* probably work on other OSes)
 
 ## Benefits
 - Having all 3 types of clients (stable, ptb, canary) packed into one
