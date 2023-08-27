@@ -1,4 +1,5 @@
-﻿using Microsoft.Web.WebView2.Wpf;
+﻿using Microsoft.Web.WebView2.Core;
+using Microsoft.Web.WebView2.Wpf;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -30,6 +31,8 @@ namespace itsoutchyCord
         public MainWindow()
         {
             InitializeComponent();
+            clearPLESESERKDEJKFJEJF();
+            webview.Source = new Uri("https://discord.com/app");
             // We need to only run injection code when the page loads
             webview.NavigationCompleted += Webview_NavigationCompleted;
             // Settings (clients only for now)
@@ -51,6 +54,21 @@ namespace itsoutchyCord
             {
                 // Create the settings file with the defaults for next time, in case there somehow isn't one
                 File.WriteAllText(Path.Combine(Directory.GetCurrentDirectory(), "settings.txt"), "client=stable");
+            }
+        }
+
+        // name is because i was scared that my account would be gone due to caching
+        async Task clearPLESESERKDEJKFJEJF()
+        {
+            try
+            {
+                Directory.CreateDirectory(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "itsoutchyCord"));
+                var webView2Environment = await CoreWebView2Environment.CreateAsync(null, Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "itsoutchyCord"));
+                await webview.EnsureCoreWebView2Async(webView2Environment);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message + "\n" + ex.StackTrace);
             }
         }
 
@@ -133,7 +151,7 @@ namespace itsoutchyCord
         public async static Task<string> injectCSS(this WebView2 theView, string css)
         {
             // Why not make this built-in? I don't like having to use an extension method for something that should be built-in but whatever I guess
-            return await theView.ExecuteScriptAsync("document.addEventListener(\"load\", function(ev) {var styleSheet = document.createElement(\"style\"); styleSheet.innerText = " + css + "; document.head.appendChild(styleSheet)})");
+            return await theView.ExecuteScriptAsync("var styleSheet = document.createElement(\"style\"); styleSheet.innerText = " + css + "; document.head.appendChild(styleSheet);");
         }
     }
 }

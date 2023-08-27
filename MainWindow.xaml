@@ -11,6 +11,6 @@
         <!-- Margin="0,10,10,0" -->
         <!--<Label Name="verNotif" Content="Version [N/A] is available!" HorizontalAlignment="Right" VerticalAlignment="Top" Background="#FF404146" Foreground="White" Panel.ZIndex="1000" HorizontalContentAlignment="Right"/>-->
         <!--- Height="434" Width="800" -->
-        <Wpf:WebView2 Name="webview" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Source="https://discord.com/app"/>
+        <Wpf:WebView2 Name="webview" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
     </Grid>
 </Window>
