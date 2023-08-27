@@ -68,10 +68,7 @@ namespace itsoutchyCord
                 // Show the notification for 7 seconds before hiding again
                 logToConsole("Should be shown");
                 // Stupid Webview2 hiding all other controls for absolutely no reason!!!!!!!!!!
-                // WHY ARENT YOU RUNNING?! AAAAAAAAAAAAAAAA                                                                                                                                                                                                                                                                                                                  \/      run this. please. PLEASE!     \/
-                //await webview.ExecuteScriptAsync("var updateNotif = document.createElement(\"p\");\nupdateNotif.style.backgroundColor = \"#FF404146\";\nupdateNotif.innerText = \"Version" + onlineVer + " is available!;\nupdateNotif.style.top = \"0\";\nupdateNotif.style.right = \"0\";\nupdateNotif.setAttribute(\"id\", \"updateNotification\");\nupdateNotif.style.zIndex = \"10000\";\nupdateNotif.style.position = \"absolute\";\ndocument.body.appendChild(updateNotif);");
-                //await Task.Delay(7000);
-                //await webview.ExecuteScriptAsync("document.getElementById(\"updateNotification\").style.display = \"none\";");
+                // Fixed sorta by using a seperate window with no titlebar and it doesn't show in the taskbar, I don't think it moves with the main window though which is annoying
                 updateNotif notif = new updateNotif();
                 notif.Top = Top;
                 notif.Left = Left;
@@ -132,10 +129,10 @@ namespace itsoutchyCord
         /// </summary>
         /// <param name="theView"></param>
         /// <param name="css">The css code to inject</param>
-        /// <returns></returns>
+        /// <returns><see cref="Task{string}"/>, which I think represents the javascript code which was run</returns>
         public async static Task<string> injectCSS(this WebView2 theView, string css)
         {
-            // Why not make this built-in?
+            // Why not make this built-in? I don't like having to use an extension method for something that should be built-in but whatever I guess
             return await theView.ExecuteScriptAsync("document.addEventListener(\"load\", function(ev) {var styleSheet = document.createElement(\"style\"); styleSheet.innerText = " + css + "; document.head.appendChild(styleSheet)})");
         }
     }
