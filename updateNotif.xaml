@@ -1,0 +1,13 @@
+﻿<Window x:Class="itsoutchyCord.updateNotif"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:itsoutchyCord"
+        mc:Ignorable="d"
+        Title="updateNotif" Height="134" Width="435" WindowStyle="None" ResizeMode="NoResize" ShowInTaskbar="False" Topmost="True" Focusable="False" IsHitTestVisible="False">
+    <Grid Background="#FF404146">
+        <Label Name="verLabel" Content="Version N/A is available!" HorizontalContentAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" Height="58" Width="Auto" FontSize="29"/>
+
+    </Grid>
+</Window>

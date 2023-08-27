@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -23,7 +25,8 @@ namespace itsoutchyCord
     /// </summary>
     public partial class MainWindow : Window
     {
-        public static string localVersion = "v0.1-alpha";
+        public static string localVersion = "v0.01-alpha";
+        public static string? onlineVer;
         public MainWindow()
         {
             InitializeComponent();
@@ -51,12 +54,41 @@ namespace itsoutchyCord
             }
         }
 
+        private async Task updateChecker(object? sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs e)
+        {
+            // Check for updates
+            HttpClient http = new HttpClient();
+            http.BaseAddress = new Uri("https://raw.githubusercontent.com/itsoutchy-projects/itsoutchyCord/main/gitVersion.txt");
+            HttpResponseMessage response = await http.GetAsync(http.BaseAddress);
+            HttpContent content = response.Content;
+            onlineVer = await content.ReadAsStringAsync();
+            logToConsole(onlineVer);
+            if (localVersion != onlineVer)
+            {
+                // Show the notification for 7 seconds before hiding again
+                logToConsole("Should be shown");
+                // Stupid Webview2 hiding all other controls for absolutely no reason!!!!!!!!!!
+                // WHY ARENT YOU RUNNING?! AAAAAAAAAAAAAAAA                                                                                                                                                                                                                                                                                                                  \/      run this. please. PLEASE!     \/
+                //await webview.ExecuteScriptAsync("var updateNotif = document.createElement(\"p\");\nupdateNotif.style.backgroundColor = \"#FF404146\";\nupdateNotif.innerText = \"Version" + onlineVer + " is available!;\nupdateNotif.style.top = \"0\";\nupdateNotif.style.right = \"0\";\nupdateNotif.setAttribute(\"id\", \"updateNotification\");\nupdateNotif.style.zIndex = \"10000\";\nupdateNotif.style.position = \"absolute\";\ndocument.body.appendChild(updateNotif);");
+                //await Task.Delay(7000);
+                //await webview.ExecuteScriptAsync("document.getElementById(\"updateNotification\").style.display = \"none\";");
+                updateNotif notif = new updateNotif();
+                notif.Top = Top;
+                notif.Left = Left;
+                notif.Show();
+                logToConsole("Should be hidden");
+            }
+        }
+
         private async void Webview_NavigationCompleted(object? sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs e)
         {
             logToConsole("WARNING: Do not use random code snippets! Make sure you can read the code, otherwise you're risking your account being stolen!"); // Dunno why people paste random code snippets into the console, well. I mean, some are good, but still.
             logToConsole("Started loading");
+
             // Give discord time to load, this is 4 seconds
             await Task.Delay(4000);
+            // Guess we need to do it here, how annoying
+            await updateChecker(sender, e); // you know what. im giving up on this. omg this was so annoying... actually imma try having the notification on a seperate window
             // Injection code
             try
             {
