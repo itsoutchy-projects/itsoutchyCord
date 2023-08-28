@@ -5,7 +5,8 @@ It's *much* faster thanks to it using Webview2 (*should* probably work on other 
 ## Benefits
 - Having all 3 types of clients (stable, ptb, canary) packed into one
 - Custom Javascript and CSS injection (incomplete)
-- Loads so much faster than the official client due to there being no update utility, this comes with the downside that you (for now) have to check for updates yourself
+- Loads so much faster than the official client due to there being no update utility
+- Install is a *lot* smaller
 
 ## How to change settings?
 Find the settings.txt file, then edit the property (do not put a space before or after the equals sign)
@@ -16,5 +17,5 @@ client=canary
 
 ## TODO:
 - [ ] Add support for BetterDiscord plugins  
-- [ ] Fix theme injection not working  
+- [ ] Fix theme injection not working (for now a little fix is to use javascript to create a `<style>` element and set its `innerText` property to the css code)  
 - [ ] Add vencord (working on that)  
