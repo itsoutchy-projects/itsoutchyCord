@@ -26,7 +26,7 @@ namespace itsoutchyCord
     /// </summary>
     public partial class MainWindow : Window
     {
-        public static string localVersion = "v0.2-alpha";
+        public static string localVersion = "v0.2";
         public static string? onlineVer;
         public MainWindow()
         {
