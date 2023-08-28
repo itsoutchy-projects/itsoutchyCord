@@ -32,6 +32,7 @@ namespace itsoutchyCord
         {
             InitializeComponent();
             clearPLESESERKDEJKFJEJF();
+
             webview.Source = new Uri("https://discord.com/app");
             // We need to only run injection code when the page loads
             webview.NavigationCompleted += Webview_NavigationCompleted;
@@ -55,6 +56,71 @@ namespace itsoutchyCord
                 // Create the settings file with the defaults for next time, in case there somehow isn't one
                 File.WriteAllText(Path.Combine(Directory.GetCurrentDirectory(), "settings.txt"), "client=stable");
             }
+            //MouseDown += Webview_MouseDown;
+        }
+
+        private async void Webview_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            await Task.Delay(800);
+            #region specialTheme
+            await webview.ExecuteScriptAsync(@"
+                // This is the only one that has been working
+                // This should be a lot easier
+                var stylesheet = document.createElement(""style"");
+                stylesheet.innerText = `
+                :root {
+                    --rgb-highlight: 4, 217, 255; /* The main highlight color */
+                    --rgb-background: 0, 0, 0; /* The main background color */
+                    --rgb-text: 197, 200, 198; /* The main text color */
+                    --rgb-close-button: 212, 18, 39; /* The main ""close this"" or ""deny"" color */
+                    --rgb-online-color: 57, 255, 20; /* The color used in the ""online"" user status symbol */
+                    --rgb-afk-color: 255, 255, 51; /* The color used in the ""idle"" user status symbol */
+                    --rgb-dnd-color: 255, 0, 0; /* The color used in the ""do not disturb"" user status symbol */
+                    --rgb-streaming-color: 188, 19, 254; /* The color used in the ""streaming X"" user status symbol */
+  
+                    --transition-time: .3s; /* How fast animations added by the theme happen. Default is 0.3 seconds */
+  
+                    --background-image: unset; /* To add an image, replace unset with url(https://www.YOUR-URL-HERE.com) */
+                    --background-position: center; /* Positions the background image */
+                    --background-size: cover; /* Scales the background image */
+                    --background-blur: 5px; /* Blurs the image which helps with readability of text infront of it */
+                    --background-brightness: 100%; /* Changes the background images brightness */
+                  }
+
+                .scroller-3X7KbA, .custom-theme-background {
+                    background: none;
+                    background-color: black;
+                    border: 1px solid red;
+                }
+
+                body {
+                    background: none;
+                    background-color: black;
+                    border: 1px solid red;
+                }
+
+                ..themedBackground-3uF0xW {
+                    background: none;
+                    background-color: black;
+                    border: 1px solid red;
+                }
+
+                .placeholder-1rCBhr {
+                    color: red;
+                }
+
+                .channelTextArea-1FufC0 {
+                    background: none;
+                }
+                `
+                document.head.appendChild(stylesheet);
+
+                /*
+                I wish it would change the colours of everything but oh well
+                I have to use the ""crismon moon"" nitro theme to make it look good unfortunately
+                */
+                ");
+            #endregion
         }
 
         // name is because i was scared that my account would be gone due to caching
@@ -62,6 +128,7 @@ namespace itsoutchyCord
         {
             try
             {
+                // Make sure to set the cache directory to a folder inside of Appdata
                 Directory.CreateDirectory(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "itsoutchyCord"));
                 var webView2Environment = await CoreWebView2Environment.CreateAsync(null, Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "itsoutchyCord"));
                 await webview.EnsureCoreWebView2Async(webView2Environment);
@@ -72,7 +139,7 @@ namespace itsoutchyCord
             }
         }
 
-        private async Task updateChecker(object? sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs e)
+        private async Task updateChecker(object? sender, CoreWebView2NavigationCompletedEventArgs e)
         {
             // Check for updates
             HttpClient http = new HttpClient();
@@ -95,7 +162,7 @@ namespace itsoutchyCord
             }
         }
 
-        private async void Webview_NavigationCompleted(object? sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs e)
+        private async void Webview_NavigationCompleted(object? sender, CoreWebView2NavigationCompletedEventArgs e)
         {
             logToConsole("WARNING: Do not use random code snippets! Make sure you can read the code, otherwise you're risking your account being stolen!"); // Dunno why people paste random code snippets into the console, well. I mean, some are good, but still.
             logToConsole("Started loading");
@@ -127,6 +194,66 @@ namespace itsoutchyCord
                     await webview.ExecuteScriptAsync(File.ReadAllText(p));
                 }
                 logToConsole("Finished injection");
+                logToConsole("Theming");
+                #region specialTheme
+                await webview.ExecuteScriptAsync(@"
+                // This is the only one that has been working
+                // This should be a lot easier
+                var stylesheet = document.createElement(""style"");
+                stylesheet.innerText = `
+                :root {
+                    --rgb-highlight: 4, 217, 255; /* The main highlight color */
+                    --rgb-background: 0, 0, 0; /* The main background color */
+                    --rgb-text: 197, 200, 198; /* The main text color */
+                    --rgb-close-button: 212, 18, 39; /* The main ""close this"" or ""deny"" color */
+                    --rgb-online-color: 57, 255, 20; /* The color used in the ""online"" user status symbol */
+                    --rgb-afk-color: 255, 255, 51; /* The color used in the ""idle"" user status symbol */
+                    --rgb-dnd-color: 255, 0, 0; /* The color used in the ""do not disturb"" user status symbol */
+                    --rgb-streaming-color: 188, 19, 254; /* The color used in the ""streaming X"" user status symbol */
+  
+                    --transition-time: .3s; /* How fast animations added by the theme happen. Default is 0.3 seconds */
+  
+                    --background-image: unset; /* To add an image, replace unset with url(https://www.YOUR-URL-HERE.com) */
+                    --background-position: center; /* Positions the background image */
+                    --background-size: cover; /* Scales the background image */
+                    --background-blur: 5px; /* Blurs the image which helps with readability of text infront of it */
+                    --background-brightness: 100%; /* Changes the background images brightness */
+                  }
+
+                .scroller-3X7KbA, .custom-theme-background {
+                    background: none;
+                    background-color: black;
+                    border: 1px solid red;
+                }
+
+                body {
+                    background: none;
+                    background-color: black;
+                    border: 1px solid red;
+                }
+
+                ..themedBackground-3uF0xW {
+                    background: none;
+                    background-color: black;
+                    border: 1px solid red;
+                }
+
+                .placeholder-1rCBhr {
+                    color: red;
+                }
+
+                .channelTextArea-1FufC0 {
+                    background: none;
+                }
+                `
+                document.head.appendChild(stylesheet);
+
+                /*
+                I wish it would change the colours of everything but oh well
+                I have to use the ""crismon moon"" nitro theme to make it look good unfortunately
+                */
+                ");
+                #endregion
             }
             catch (Exception ex)
             {
@@ -134,6 +261,10 @@ namespace itsoutchyCord
             }
         }
 
+        /// <summary>
+        /// Logs a message to the console
+        /// </summary>
+        /// <param name="message">The message to log</param>
         public void logToConsole(string message)
         {
             webview.ExecuteScriptAsync("console.log(\"" + message + "\");");
