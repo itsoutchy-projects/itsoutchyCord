@@ -26,7 +26,7 @@ namespace itsoutchyCord
     /// </summary>
     public partial class MainWindow : Window
     {
-        public static string localVersion = "v0.1-alpha";
+        public static string localVersion = "v0.2-alpha";
         public static string? onlineVer;
         public MainWindow()
         {
@@ -148,6 +148,10 @@ namespace itsoutchyCord
             HttpContent content = response.Content;
             onlineVer = await content.ReadAsStringAsync();
             logToConsole(onlineVer);
+            if (onlineVer == null)
+            {
+                throw new UpdateException("Failed to check for updates because the resulting version is null");
+            }
             if (localVersion != onlineVer)
             {
                 // Show the notification for 7 seconds before hiding again
@@ -283,6 +287,29 @@ namespace itsoutchyCord
         {
             // Why not make this built-in? I don't like having to use an extension method for something that should be built-in but whatever I guess
             return await theView.ExecuteScriptAsync("var styleSheet = document.createElement(\"style\"); styleSheet.innerText = " + css + "; document.head.appendChild(styleSheet);");
+        }
+    }
+
+    public class UpdateException : Exception
+    {
+        public string? msg;
+        public Exception? innerEx;
+
+        public UpdateException()
+        {
+            msg = null;
+            innerEx = null;
+        }
+
+        public UpdateException(string? message)
+        {
+            msg = message;
+        }
+
+        public UpdateException(string? message, Exception? innerException)
+        {
+            msg = message;
+            innerEx = innerException;
         }
     }
 }
