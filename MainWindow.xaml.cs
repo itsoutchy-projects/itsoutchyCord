@@ -286,7 +286,7 @@ namespace itsoutchyCord
         public async static Task<string> injectCSS(this WebView2 theView, string css)
         {
             // Why not make this built-in? I don't like having to use an extension method for something that should be built-in but whatever I guess
-            return await theView.ExecuteScriptAsync("var styleSheet = document.createElement(\"style\"); styleSheet.innerText = " + css + "; document.head.appendChild(styleSheet);");
+            return await theView.ExecuteScriptAsync("var styleSheet = document.createElement(\"style\"); styleSheet.innerText = \"" + css + "\"; document.head.appendChild(styleSheet);");
         }
     }
 
