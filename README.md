@@ -18,4 +18,4 @@ client=canary
 ## TODO:
 - [ ] Add support for BetterDiscord plugins  
 - [ ] Fix theme injection not working (for now a little fix is to use javascript to create a `<style>` element and set its `innerText` property to the css code)  
-- [ ] Add vencord (working on that)  
+- [x] Add vencord (working on that)  
