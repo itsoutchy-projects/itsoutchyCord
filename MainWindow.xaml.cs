@@ -2,10 +2,10 @@
 using Microsoft.Web.WebView2.Wpf;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -18,6 +18,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Path = System.IO.Path;
+using Notification.Wpf;
 
 namespace itsoutchyCord
 {
@@ -28,35 +29,103 @@ namespace itsoutchyCord
     {
         public static string localVersion = "v0.2";
         public static string? onlineVer;
+
+        public bool vencord = false;
+        public CoreWebView2BrowserExtension vencordExt = null;
+
+        public NotificationManager notifs = new NotificationManager();
+
+        public Process arrpc;
+
         public MainWindow()
         {
             InitializeComponent();
-            clearPLESESERKDEJKFJEJF();
-
-            webview.Source = new Uri("https://discord.com/app");
-            // We need to only run injection code when the page loads
-            webview.NavigationCompleted += Webview_NavigationCompleted;
-            // Settings (clients only for now)
-            if (File.Exists(Path.Combine(Directory.GetCurrentDirectory(), "settings.txt")))
+            try
             {
-                string[] prefs = File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), "settings.txt")).Split("\n");
-                foreach (string pref in prefs)
+                arrpc = new Process();
+                var startInfo = new ProcessStartInfo()
                 {
-                    string[] assignment = pref.Split("=");
-                    if (assignment[0] == "client")
+                    //WindowStyle = ProcessWindowStyle.Hidden,
+                    FileName = "ARRPC Server/ARRPC Server.exe",
+                    //CreateNoWindow = true
+                };
+                configVencord.Click += ConfigVencord_Click;
+                openGithubRepo.Click += OpenGithubRepo_Click;
+                arrpc.StartInfo = startInfo;
+                arrpc.Start();
+                //arrpc.StandardInput.WriteLine("npx arrpc");
+                clearPLESESERKDEJKFJEJF();
+                webview.Source = new Uri("https://discord.com/app");
+                Closed += MainWindow_Closed;
+                // We need to only run injection code when the page loads
+                webview.NavigationCompleted += Webview_NavigationCompleted;
+                // Settings (clients only for now)
+                if (File.Exists(Path.Combine(Directory.GetCurrentDirectory(), "settings.txt")))
+                {
+                    string[] prefs = File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), "settings.txt")).Split("\n");
+                    foreach (string pref in prefs)
                     {
-                        if (assignment[1] != "stable")
+                        string[] assignment = pref.Split("=");
+                        if (assignment[0] == "client")
                         {
-                            webview.Source = new Uri("https://" + assignment[1] + ".discord.com/app");
+                            if (assignment[1].Trim() != "stable")
+                            {
+                                webview.Source = new Uri("https://" + assignment[1] + ".discord.com/app");
+                            }
+                        }
+                        if (assignment[0] == "vencord")
+                        {
+                            vencord = assignment[1] == "true";
+                            //vencordExt.EnableAsync(vencord);
                         }
                     }
                 }
-            } else
+                else
+                {
+                    // Create the settings file with the defaults for next time, in case there somehow isn't one
+                    File.WriteAllText(Path.Combine(Directory.GetCurrentDirectory(), "settings.txt"), "client=stable\nvencord=false");
+                }
+                //MouseDown += Webview_MouseDown;
+            } catch (Exception ex)
             {
-                // Create the settings file with the defaults for next time, in case there somehow isn't one
-                File.WriteAllText(Path.Combine(Directory.GetCurrentDirectory(), "settings.txt"), "client=stable");
+                MessageBox.Show(ex.Message);
             }
-            //MouseDown += Webview_MouseDown;
+        }
+
+        private void MainWindow_Closed(object? sender, EventArgs e)
+        {
+            arrpc.Kill();
+        }
+
+        private void OpenGithubRepo_Click(object sender, RoutedEventArgs e)
+        {
+            Process.Start(new ProcessStartInfo("https://github.com/itsoutchy-projects/itsoutchyCord")
+            {
+                UseShellExecute = true
+            });
+        }
+
+        private void ConfigVencord_Click(object sender, RoutedEventArgs e)
+        {
+            if (!webview.IsInitialized)
+            {
+                notifs.Show(new NotificationContent
+                {
+                    Title = "Error",
+                    Message = "Can't toggle Vencord because Discord hasn't loaded yet, try again soon",
+                    Type = NotificationType.Error
+                });
+                return;
+            }
+            vencord = !vencord;
+            vencordExt.EnableAsync(vencord);
+            webview.Reload();
+            notifs.Show(new NotificationContent
+            {
+                Title = "Success",
+                Message = vencord ? "Vencord has been enabled" : "Vencord has been disabled",
+                Type = NotificationType.Success
+            });
         }
 
         private async void Webview_MouseDown(object sender, MouseButtonEventArgs e)
@@ -130,12 +199,30 @@ namespace itsoutchyCord
             {
                 // Make sure to set the cache directory to a folder inside of Appdata
                 Directory.CreateDirectory(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "itsoutchyCord"));
-                var webView2Environment = await CoreWebView2Environment.CreateAsync(null, Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "itsoutchyCord"));
+                var webView2Environment = await CoreWebView2Environment.CreateAsync(null, Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "itsoutchyCord"), new CoreWebView2EnvironmentOptions
+                {
+                    AreBrowserExtensionsEnabled = true
+                });
                 await webview.EnsureCoreWebView2Async(webView2Environment);
+                bool hasExt = false;
+                foreach (CoreWebView2BrowserExtension ext in await webview.CoreWebView2.Profile.GetBrowserExtensionsAsync())
+                {
+                    hasExt = ext.Id == "cbghhgpcnddeihccjmnadmkaejncjndb";
+                }
+                if (vencordExt == null && !hasExt)
+                {
+                    //try
+                    //{
+                        vencordExt = await webview.CoreWebView2.Profile.AddBrowserExtensionAsync(Path.Combine(Directory.GetCurrentDirectory(), "vencord"));
+                    //} catch (UnauthorizedAccessException ex)
+                    //{
+                    //    // idk mannn it just denies itself access because it already has the extension :/
+                    //}
+                }
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message + "\n" + ex.StackTrace);
+                MessageBox.Show(ex.Message + "\n" + ex.StackTrace + "\n" + ex.GetType().Name);
             }
         }
 
@@ -170,6 +257,11 @@ namespace itsoutchyCord
         {
             logToConsole("WARNING: Do not use random code snippets! Make sure you can read the code, otherwise you're risking your account being stolen!"); // Dunno why people paste random code snippets into the console, well. I mean, some are good, but still.
             logToConsole("Started loading");
+            //await webview.CoreWebView2.Profile.AddBrowserExtensionAsync(Path.Combine(Directory.GetCurrentDirectory(), "vencord"));
+            if (vencordExt.IsEnabled != vencord)
+            {
+                await vencordExt.EnableAsync(vencord);
+            }
 
             // Give discord time to load, this is 4 seconds
             await Task.Delay(4000);
@@ -271,7 +363,13 @@ namespace itsoutchyCord
         /// <param name="message">The message to log</param>
         public void logToConsole(string message)
         {
-            webview.ExecuteScriptAsync("console.log(\"" + message + "\");");
+            try
+            {
+                webview.ExecuteScriptAsync("console.log(\"" + message + "\");");
+            } catch (Exception ex)
+            {
+                MessageBox.Show("Couldn't log the message to the console because: " + ex.Message);
+            }
         }
     }
 

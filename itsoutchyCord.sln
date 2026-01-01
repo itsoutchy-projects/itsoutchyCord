@@ -5,6 +5,8 @@ VisualStudioVersion = 17.3.32901.215
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "itsoutchyCord", "itsoutchyCord.csproj", "{19A4CBAE-8FF7-49F0-B4FD-D4524BFD4128}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ARRPC Server", "..\ARRPC Server\ARRPC Server.csproj", "{77CFD706-BE5A-454C-8AD1-5C10F9FD5649}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{19A4CBAE-8FF7-49F0-B4FD-D4524BFD4128}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{19A4CBAE-8FF7-49F0-B4FD-D4524BFD4128}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{19A4CBAE-8FF7-49F0-B4FD-D4524BFD4128}.Release|Any CPU.Build.0 = Release|Any CPU
+		{77CFD706-BE5A-454C-8AD1-5C10F9FD5649}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{77CFD706-BE5A-454C-8AD1-5C10F9FD5649}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{77CFD706-BE5A-454C-8AD1-5C10F9FD5649}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{77CFD706-BE5A-454C-8AD1-5C10F9FD5649}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
